@@ -9,7 +9,7 @@ Ready for testing. Probably production ready in most cases, though not yet prove
 ## Synopsis
 
 ````lua
-lua_package_path "/path/to/lua-resty-httpipe/lib/?.lua;;";
+lua_package_path "/path/to/lua-resty-limit-req/lib/?.lua;;";
 
 server {
 
