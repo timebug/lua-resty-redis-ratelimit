@@ -42,7 +42,7 @@ __DATA__
     }
     location /b {
         content_by_lua '
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
 
             for i = 1, 10 do
                 local res = ngx.location.capture("/a")
@@ -50,7 +50,7 @@ __DATA__
                 ngx.sleep(0.2)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 10 do
@@ -59,13 +59,13 @@ __DATA__
                 ngx.sleep(0.4)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 10 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#2: ", res.status)
-                ngx.sleep(0.5)
+                ngx.sleep(0.6)
             end
         ';
     }
@@ -129,29 +129,29 @@ GET /b
     }
     location /b {
         content_by_lua '
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#0: ", res.status)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#1: ", res.status)
-                ngx.sleep(0.5)
+                ngx.sleep(0.6)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#2: ", res.status)
-                ngx.sleep(0.5)
+                ngx.sleep(0.6)
             end
         ';
     }
@@ -192,29 +192,29 @@ GET /b
     }
     location /b {
         content_by_lua '
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#0: ", res.status)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a", { method = ngx.HTTP_HEAD })
                 ngx.say("#1: ", res.status)
-                ngx.sleep(0.5)
+                ngx.sleep(0.6)
             end
 
-            ngx.sleep(0.5)
+            ngx.sleep(0.6)
             ngx.say()
 
             for i = 1, 2 do
                 local res = ngx.location.capture("/a")
                 ngx.say("#2: ", res.status)
-                ngx.sleep(0.5)
+                ngx.sleep(0.6)
             end
         ';
     }
