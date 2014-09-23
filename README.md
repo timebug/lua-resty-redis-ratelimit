@@ -1,14 +1,25 @@
 # lua-resty-limit-req
 
-It is used to limit the request processing rate per a defined key with multiple NGINX instances. The limitation is done using the "[leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket)" method.
+lua-resty-limit-req - Limit the request processing rate between multiple NGINX instances
 
 # Status
 
 Ready for testing. Probably production ready in most cases, though not yet proven in the wild. Please check the issues list and let me know if you have any problems / questions.
 
+## Description
+
+This lua library is a request processing rate limit module for ngx_lua:
+
+http://wiki.nginx.org/HttpLuaModule
+
+It is used to limit the request processing rate per a defined key between multiple NGINX instances. The limitation is done using the "[leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket)" method.
+
+This module use redis (>= [2.6.0](http://redis.io/commands/eval)) as the backend storage, so you also need the [lua-resty-redis](https://github.com/openresty/lua-resty-redis) library work with it.
+
 ## Synopsis
 
 ````lua
+lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
 lua_package_path "/path/to/lua-resty-limit-req/lib/?.lua;;";
 
 server {
@@ -33,6 +44,43 @@ server {
 
 }
 ````
+
+# Methods
+
+## limit
+
+`syntax: ok = req.limit(cfg)`
+
+Available limit configurations are listed as follows:
+
+* `key`
+
+The key is any non-empty value of the specified variable.
+
+* `zone`
+
+Sets the namespace, in particular, we use `<zone>:<key>` string as a unique state identifier inside redis.
+
+* `rate`
+
+The rate is specified in requests per second (r/s). If a rate of less than one request per second is desired, it is specified in request per minute (r/m). For example, half-request per second is 30r/m.
+
+* `interval`
+
+The time delay (in s) before back to normal state, default 0.
+
+* `log_level`
+
+Sets the desired logging level for cases when the server refuses to process requests due to rate exceeding, default `ngx.NOTICE`.
+
+* `rds`
+
+Sets the redis host and port, default `127.0.0.1` and 6379.
+
+* `conn`
+
+Instead of the specific redis configuration (aka. `rds`), sets the connected redis object directly.
+
 
 # Author
 
