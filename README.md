@@ -19,7 +19,6 @@ This module use redis (>= [2.6.0](http://redis.io/commands/eval)) as the backend
 ## Synopsis
 
 ````lua
-lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
 lua_package_path "/path/to/lua-resty-limit-req/lib/?.lua;;";
 
 server {
