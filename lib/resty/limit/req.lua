@@ -84,6 +84,7 @@ local function redis_lookup(conn, zone, key, rate, duration)
     local res, err = red:evalsha(redis_limit_req_script_sha, 4,
                                  zone .. ":" .. key, rate, now, duration)
     if not res then
+        redis_limit_req_script_sha = nil
         return nil, err
     end
 
