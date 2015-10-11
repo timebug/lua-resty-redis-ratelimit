@@ -28,7 +28,7 @@ if res then
     end
 
     local ms = math.abs(now - last)
-    excess = excess - math.floor(rate * ms / 1000) + 1000
+    excess = excess - rate * ms / 1000 + 1000
 
     if excess < 0 then
         excess = 0
@@ -80,7 +80,7 @@ local function redis_lookup(conn, zone, key, rate, duration)
         redis_limit_req_script_sha = res
     end
 
-    local now = math.floor(ngx.now() * 1000)
+    local now = ngx.now() * 1000
     local res, err = red:evalsha(redis_limit_req_script_sha, 4,
                                  zone .. ":" .. key, rate, now, duration)
     if not res then
