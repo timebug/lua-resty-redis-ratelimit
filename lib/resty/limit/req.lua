@@ -17,7 +17,11 @@ local now, interval = tonumber(KEYS[3]), tonumber(KEYS[4])
 local excess, last, forbidden = 0, 0, 0
 
 local res = redis.pcall('GET', key)
-if res then
+if type(res) == "table" and res.err then
+    return {err=res.err}
+end
+
+if res and type(res) == "string" then
     local v = cjson.decode(res)
     if v and #v > 2 then
         excess, last, forbidden = v[1], v[2], v[3]
@@ -36,15 +40,15 @@ if res then
 
     if excess > 0 then
         if interval > 0 then
-            local res, err = redis.pcall('SET', key,
-                                         cjson.encode({excess, now, 1}))
-            if not res then
-                return {err=err}
+            local res = redis.pcall('SET', key,
+                                    cjson.encode({excess, now, 1}))
+            if type(res) == "table" and res.err then
+                return {err=res.err}
             end
 
-            local res, err = redis.pcall('EXPIRE', key, interval)
-            if not res then
-                return {err=err}
+            local res = redis.pcall('EXPIRE', key, interval)
+            if type(res) == "table" and res.err then
+                return {err=res.err}
             end
         end
 
@@ -52,14 +56,14 @@ if res then
     end
 end
 
-local res, err = redis.pcall('SET', key, cjson.encode({excess, now, 0}))
-if not res then
-    return {err=err}
+local res = redis.pcall('SET', key, cjson.encode({excess, now, 0}))
+if type(res) == "table" and res.err then
+    return {err=res.err}
 end
 
-local res, err = redis.pcall('EXPIRE', key, 60)
-if not res then
-    return {err=err}
+local res = redis.pcall('EXPIRE', key, 60)
+if type(res) == "table" and res.err then
+    return {err=res.err}
 end
 
 return {1, excess}
