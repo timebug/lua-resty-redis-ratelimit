@@ -13,6 +13,7 @@ local redis_limit_req_script = [==[
 local key = KEYS[1]
 local rate = tonumber(KEYS[2])
 local now, interval = tonumber(KEYS[3]), tonumber(KEYS[4])
+local burst = tonumber(KEYS[5])
 
 local excess, last, forbidden = 0, 0, 0
 
@@ -38,7 +39,7 @@ if res and type(res) == "string" then
         excess = 0
     end
 
-    if excess > 0 then
+    if excess > burst then
         if interval > 0 then
             local res = redis.pcall('SET', key,
                                     cjson.encode({excess, now, 1}))
@@ -70,7 +71,7 @@ return {1, excess}
 ]==]
 
 
-local function redis_lookup(conn, zone, key, rate, duration)
+local function redis_lookup(conn, zone, key, rate, duration, burst)
     local red = conn
 
     if not redis_limit_req_script_sha then
@@ -85,8 +86,9 @@ local function redis_lookup(conn, zone, key, rate, duration)
     end
 
     local now = ngx.now() * 1000
-    local res, err = red:evalsha(redis_limit_req_script_sha, 4,
-                                 zone .. ":" .. key, rate, now, duration)
+
+    local res, err = red:evalsha(redis_limit_req_script_sha, 5,
+                                 zone .. ":" .. key, rate, now, duration, burst)
     if not res then
         redis_limit_req_script_sha = nil
         return nil, err
@@ -141,6 +143,7 @@ function _M.limit(cfg)
     local zone = cfg.zone or "limit_req"
     local key = cfg.key or ngx.var.remote_addr
     local rate = cfg.rate or "1r/s"
+    local burst = cfg.burst * 1000 or 0
     local interval = cfg.interval or 0
     local log_level = cfg.log_level or ngx.NOTICE
 
@@ -157,7 +160,7 @@ function _M.limit(cfg)
 
     rate = floor((tonumber(rate) or 1) * 1000 / scale)
 
-    local res, err = redis_lookup(conn, zone, key, rate, interval)
+    local res, err = redis_lookup(conn, zone, key, rate, interval, burst)
     if res and (res[1] == _M.BUSY or res[1] == _M.FORBIDDEN) then
         if res[1] == _M.BUSY then
             ngx.log(log_level, 'limiting requests, excess ' ..
