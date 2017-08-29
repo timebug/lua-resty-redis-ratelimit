@@ -126,6 +126,14 @@ function _M.limit(cfg)
             return _M.OK
         end
 
+        if rds.pass then
+            local ok, err = red:auth(rds.pass)
+            if not ok then
+                ngx.log(ngx.ALERT, "Lua failed to authenticate to Redis")
+                return _M.OK
+            end
+        end
+
         cfg.conn = red
     end
 
