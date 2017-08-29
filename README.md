@@ -74,7 +74,10 @@ Sets the desired logging level for cases when the server refuses to process requ
 
 * `rds`
 
-Sets the redis host and port, default `127.0.0.1` and 6379.
+Sets the redis `host` and `port`, default `127.0.0.1` and 6379.
+
+    - `rds.pass`: auth redis.
+    - `rds.dbid`: select database.
 
 * `conn`
 

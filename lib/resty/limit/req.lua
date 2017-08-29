@@ -1,11 +1,11 @@
--- Copyright (C) 2014 Monkey Zhang (timebug), UPYUN Inc.
+-- Copyright (C) 2017 Monkey Zhang (timebug), UPYUN Inc.
 
 
 local floor = math.floor
 local tonumber = tonumber
 
 
-local _M = { _VERSION = "0.01", OK = 1, BUSY = 2, FORBIDDEN = 3 }
+local _M = { _VERSION = "0.02", OK = 1, BUSY = 2, FORBIDDEN = 3 }
 
 
 local redis_limit_req_script_sha
@@ -129,7 +129,15 @@ function _M.limit(cfg)
         if rds.pass then
             local ok, err = red:auth(rds.pass)
             if not ok then
-                ngx.log(ngx.ALERT, "Lua failed to authenticate to Redis")
+                ngx.log(ngx.ALERT, "failed to auth redis")
+                return _M.OK
+            end
+        end
+
+        if rds.dbid then
+            local ok, err = red:select(rds.dbid)
+            if not ok then
+                ngx.log(ngx.ALERT, "failed to select db")
                 return _M.OK
             end
         end
