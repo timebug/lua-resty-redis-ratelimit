@@ -94,7 +94,7 @@ Inspired from http://nginx.org/en/docs/http/ngx_http_limit_req_module.html.
 
 This module is licensed under the 2-clause BSD license.
 
-Copyright (c) 2014, Monkey Zhang <timebug.info@gmail.com>, UPYUN Inc.
+Copyright (c) 2014 - 2017, Monkey Zhang <timebug.info@gmail.com>, UPYUN Inc.
 
 All rights reserved.
 
