@@ -6,6 +6,8 @@ cache:
     - ccache
 env:
     - V_OPENRESTY=1.11.2.5
+services:
+    - redis-server
 install:
     - cpanm -v --notest Test::Nginx
 before_script:
