@@ -1,5 +1,7 @@
 # Name
 
+[![Build Status](https://travis-ci.org/timebug/lua-resty-redis-ratelimit.svg)](https://travis-ci.org/timebug/lua-resty-redis-ratelimit)
+
 lua-resty-redis-ratelimit - Limit the request processing rate between multiple NGINX instances backed by [Redis](https://redis.io/).
 
 # Table of Contents
