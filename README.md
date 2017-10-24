@@ -35,7 +35,7 @@ This module use Redis (>= [2.6.0](http://redis.io/commands/eval)) as the backend
 
 **NOTICE:** If you do not use the `duration` feature and the incoming traffic is **evenly distrbuted**, it is recommended that use the module [resty.limit.req](https://github.com/openresty/lua-resty-limit-traffic/blob/master/lib/resty/limit/req.md) to avoid unnecessary network delays.
 
-## Synopsis
+# Synopsis
 
 ````lua
 lua_package_path "/path/to/lua-resty-redis-ratelimit/lib/?.lua;;";
