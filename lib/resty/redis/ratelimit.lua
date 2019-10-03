@@ -24,8 +24,8 @@ local is_num = function(n) return type(n) == "number" end
 local redis_limit_req_script_sha
 local redis_limit_req_script = [==[
 local key = KEYS[1]
-local rate, burst = tonumber(KEYS[2]), tonumber(KEYS[3])
-local now, duration = tonumber(KEYS[4]), tonumber(KEYS[5])
+local rate, burst = tonumber(ARGV[1]), tonumber(ARGV[2])
+local now, duration = tonumber(ARGV[3]), tonumber(ARGV[4])
 
 local excess, last, forbidden = 0, 0, 0
 
@@ -140,7 +140,7 @@ local function redis_commit(red, zone, key, rate, burst, duration)
     end
 
     local now = ngx.now() * 1000
-    local res, err = red:evalsha(redis_limit_req_script_sha, 5,
+    local res, err = red:evalsha(redis_limit_req_script_sha, 1,
                                  zone .. ":" .. key, rate, burst, now,
                                  duration)
     if not res then
