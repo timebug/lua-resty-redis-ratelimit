@@ -148,11 +148,13 @@ local function redis_commit(red, zone, key, rate, burst, duration)
         return nil, err
     end
 
-    -- put it into the connection pool of size 100,
-    -- with 10 seconds max idle timeout
-    local ok, err = red:set_keepalive(10000, 100)
-    if not ok then
-        ngx.log(ngx.WARN, "failed to set keepalive: ", err)
+    if not self.no_close then --  do not close connection if specified not to do so
+        -- put it into the connection pool of size 100,
+        -- with 10 seconds max idle timeout
+        local ok, err = red:set_keepalive(10000, 100)
+        if not ok then
+            ngx.log(ngx.WARN, "failed to set keepalive: ", err)
+        end
     end
 
     return res
@@ -160,11 +162,12 @@ end
 
 
 -- local lim, err = class.new(zone, rate, burst, duration)
-function _M.new(zone, rate, burst, duration)
+function _M.new(zone, rate, burst, duration, no_close)
     local zone = zone or "ratelimit"
     local rate = rate or "1r/s"
     local burst = burst or 0
     local duration = duration or 0
+    local no_close = no_close or false
 
     local scale = 1
     local len = #rate
@@ -189,6 +192,7 @@ function _M.new(zone, rate, burst, duration)
             rate = rate,
             burst = burst,
             duration = duration,
+            no_close = no_close
     }, mt)
 end
 
