@@ -45,7 +45,7 @@ if res and type(res) == "string" then
     end
 
     local ms = math.abs(now - last)
-    excess = excess - rate * ms / 1000 + 1000
+    excess = excess - rate * ms / 1000 + 1
 
     if excess < 0 then
         excess = 0
