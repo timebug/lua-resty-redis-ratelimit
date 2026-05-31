@@ -35,16 +35,21 @@ if type(res) == "table" and res.err then
 end
 
 if res and type(res) == "string" then
-    local v = cjson.decode(res)
-    if v and #v > 2 then
-        excess, last, forbidden = v[1], v[2], v[3]
+    local ok, v = pcall(cjson.decode, res)
+    if ok and v and type(v) == "table" and #v > 2 then
+        excess = tonumber(v[1]) or 0
+        last = tonumber(v[2]) or 0
+        forbidden = tonumber(v[3]) or 0
     end
 
     if forbidden == 1 then
         return {3, excess} -- FORBIDDEN
     end
 
-    local ms = math.abs(now - last)
+    local ms = 0
+    if last > 0 then
+        ms = math.abs(now - last)
+    end
     excess = excess - rate * ms / 1000 + 1000
 
     if excess < 0 then
