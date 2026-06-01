@@ -63,6 +63,17 @@ if res and type(res) == "string" then
             if type(res) == "table" and res.err then
                 return {err=res.err}
             end
+        else
+            -- 即使没有 duration，也要保存 excess 状态
+            local res = redis.pcall('SET', key, cjson.encode({excess, now, 0}))
+            if type(res) == "table" and res.err then
+                return {err=res.err}
+            end
+
+            local res = redis.pcall('EXPIRE', key, 60)
+            if type(res) == "table" and res.err then
+                return {err=res.err}
+            end
         end
 
         return {2, excess} -- BUSY
